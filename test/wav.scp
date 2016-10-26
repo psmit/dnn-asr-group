@@ -1,0 +1,11 @@
+AimeeMullins_2009P sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/test/AimeeMullins_2009P.flac -t wav -|
+BillGates_2010 sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/test/BillGates_2010.flac -t wav -|
+DanBarber_2010 sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/test/DanBarber_2010.flac -t wav -|
+DanielKahneman_2010 sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/test/DanielKahneman_2010.flac -t wav -|
+EricMead_2009P sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/test/EricMead_2009P.flac -t wav -|
+GaryFlake_2010 sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/test/GaryFlake_2010.flac -t wav -|
+JamesCameron_2010 sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/test/JamesCameron_2010.flac -t wav -|
+JaneMcGonigal_2010 sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/test/JaneMcGonigal_2010.flac -t wav -|
+MichaelSpecter_2010 sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/test/MichaelSpecter_2010.flac -t wav -|
+RobertGupta_2010U sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/test/RobertGupta_2010U.flac -t wav -|
+TomWujec_2010U sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/test/TomWujec_2010U.flac -t wav -|

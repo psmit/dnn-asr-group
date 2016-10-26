@@ -1,0 +1,8 @@
+AlGore_2009 sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/dev/AlGore_2009.flac -t wav -|
+BarrySchwartz_2005G sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/dev/BarrySchwartz_2005G.flac -t wav -|
+BlaiseAguerayArcas_2007 sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/dev/BlaiseAguerayArcas_2007.flac -t wav -|
+BrianCox_2009U sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/dev/BrianCox_2009U.flac -t wav -|
+CraigVenter_2008 sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/dev/CraigVenter_2008.flac -t wav -|
+DavidMerrill_2009 sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/dev/DavidMerrill_2009.flac -t wav -|
+ElizabethGilbert_2009 sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/dev/ElizabethGilbert_2009.flac -t wav -|
+WadeDavis_2003 sox /teamwork/t40511_asr/u/psmit/kaldi-dnn/tedlium/flac/dev/WadeDavis_2003.flac -t wav -|
