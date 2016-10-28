@@ -5,38 +5,20 @@ from subprocess import Popen, PIPE, check_output
 import numpy as np
 import sys
 
-#CONFIGURATION
-_train_suffix = "_20h"
-_feat_type = "mfcc"  # or hires
-
-_feat_scp = "train{suffix}/{feat_type}.scp".format(suffix=_train_suffix, feat_type=_feat_type)
-_cmvn_scp = "train{suffix}/{feat_type}_cmvn.scp".format(suffix=_train_suffix, feat_type=_feat_type)
-_model = "mono/final.mdl"
-
-_utt2spk = "train{suffix}/utt2spk".format(suffix=_train_suffix)
-
-_ali_command = ("gunzip -c mono_ali/ali.gz |"#""gunzip -c mono_ali/ali.*.gz |"
-               "ali-to-pdf mono_ali/final.mdl ark:- ark,t:- |"
-
-               "utils/filter_scp.pl {feat_scp}").format(feat_scp=_feat_scp)
-
-_feat_command = ("apply-cmvn --utt2spk=ark:{utt2spk} scp:{cmvn_scp} scp:{feat_scp} ark:- |"
-                "add-deltas ark:- ark,t:-").format(feat_scp=_feat_scp, cmvn_scp=_cmvn_scp, utt2spk=_utt2spk)
-
-_dev_feat_command = ("apply-cmvn --utt2spk=ark:{utt2spk} scp:{cmvn_scp} scp:{feat_scp} ark:- | add-deltas ark:- ark,t:-".format(
-    utt2spk="dev/utt2spk", cmvn_scp="dev/mfcc_cmvn.scp", feat_scp="dev/mfcc.scp")
-
-#END OF CONFIGURATION
+_ali_command = ("gunzip -c {dir}/ali.gz |"
+                "ali-to-pdf {dir}/final.mdl ark:- ark,t:-")
 
 _cached_alignments = None
 
 
-def y_dim():
-    return int(check_output("hmm-info {} | grep 'number of pdfs'".format(_model), shell=True).split()[3])
+def y_dim(alidir="mono_ali"):
+    return int(
+        check_output("hmm-info {dir}/final.mdl | grep 'number of pdfs'".format(dir=alidir), shell=True).split()[3])
 
 
-def x_dim():
-    return int(check_output(_feat_command + "| feat-to-dim ark:- -", shell=True).strip())
+def x_dim(set="train_20h", type="mfcc", cmvn=True, deltas=True):
+    feat_command = _build_feature_command(set, type, cmvn, deltas)
+    return int(check_output(feat_command + "| feat-to-dim ark:- -", shell=True).strip())
 
 
 def _read_alignments(file_in):
@@ -72,21 +54,44 @@ def _read_features(file_in):
         yield feat_key, np.asarray(feats_list, dtype=np.float32)
 
 
-def read_all():
+def _build_feature_command(set="train_20h", type="mfcc", cmvn=True, deltas=True):
+    input = "scp:{set}/{type}.scp".format(set=set, type=type)
+    utt2spk = "ark:{set}/utt2spk".format(set=set)
+    cmvnin = "scp:{set}/{type}_cmvn.scp".format(set=set, type=type)
+
+    commands = []
+    if not cmvn and not deltas:
+        commands.append("copy-feats {input} ark,t:-".format(input=input))
+    else:
+        if cmvn:
+            commands.append(
+                "apply-cmvn --utt2spk={utt2spk} {cmvn} {input} {output}".format(utt2spk=utt2spk,
+                                                                                cmvn=cmvnin,
+                                                                                input=input,
+                                                                                output="ark:-" if deltas else "ark,t:-"))
+            input = "ark:-"
+        if deltas:
+            commands.append("add-deltas {input} ark,t:-".format(input=input))
+
+    return " | ".join(commands)
+
+
+def read_features(set="train_20h", type="mfcc", cmvn=True, deltas=True):
+    feat_command = _build_feature_command(set, type, cmvn, deltas)
+    with Popen(" | ".join(feat_command), shell=True, stdout=PIPE) as features:
+        yield from _read_features(features.stdout)
+
+
+def read_joint_feat_alignment(alidir="mono_ali", set="train_20h", type="mfcc", cmvn=True, deltas=True):
     global _cached_alignments
     if _cached_alignments is None:
-        _cached_alignments = {k: v for k,v in _read_alignments(check_output(_ali_command, shell=True).splitlines())}
+        _cached_alignments = {k: v for k, v in
+                              _read_alignments(check_output(_ali_command.format(alidir), shell=True).splitlines())}
 
-    with Popen(_feat_command, shell=True, stdout=PIPE) as features:
-        for key, val in _read_features(features.stdout):
-            if key not in _cached_alignments:
-                print("No alignment for {}".format(key), file=sys.stderr)
-                continue
+    for key, val in read_features(set, type, cmvn, deltas):
+        if key not in _cached_alignments:
+            print("No alignment for {}".format(key), file=sys.stderr)
+            continue
 
-            assert len(val) == len(_cached_alignments[key])
-            yield key, val, _cached_alignments[key]
-
-
-def read_dev():
-    with Popen(_dev_feat_command, shell=True, stdout=PIPE) as features:
-        yield from _read_features(features.stdout)
+        assert len(val) == len(_cached_alignments[key])
+        yield key, val, _cached_alignments[key]
