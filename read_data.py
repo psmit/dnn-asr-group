@@ -99,3 +99,11 @@ def read_joint_feat_alignment(alidir="mono_ali", set="train_20h", type="mfcc", c
 
         assert len(val) == len(_cached_alignments[key])
         yield key, val, _cached_alignments[key]
+
+
+def write_pdfs(key, arr):
+    print("{} [".format(key.decode()), end="")
+    for line in np.log(arr):
+        print()
+        print(" ".join(str(f) for f in line), end="")
+    print(" ]")
