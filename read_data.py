@@ -81,7 +81,8 @@ def _build_feature_command(set="train_20h", type="mfcc", cmvn=True, deltas=True)
 
 def read_features(set="train_20h", type="mfcc", cmvn=True, deltas=True):
     feat_command = _build_feature_command(set, type, cmvn, deltas)
-    with Popen(" | ".join(feat_command), shell=True, stdout=PIPE) as features:
+    print(feat_command, file=sys.stderr)
+    with Popen(feat_command, shell=True, stdout=PIPE) as features:
         yield from _read_features(features.stdout)
 
 
@@ -89,7 +90,7 @@ def read_joint_feat_alignment(alidir="mono_ali", set="train_20h", type="mfcc", c
     global _cached_alignments
     if _cached_alignments is None:
         _cached_alignments = {k: v for k, v in
-                              _read_alignments(check_output(_ali_command.format(alidir), shell=True).splitlines())}
+                              _read_alignments(check_output(_ali_command.format(dir=alidir), shell=True).splitlines())}
 
     for key, val in read_features(set, type, cmvn, deltas):
         if key not in _cached_alignments:
