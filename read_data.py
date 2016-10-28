@@ -5,6 +5,9 @@ from subprocess import Popen, PIPE, check_output
 import numpy as np
 import sys
 
+if not "/work/courses/T/S/89/5150/general/bin/kaldi" in sys.path:
+    sys.path.append("/work/courses/T/S/89/5150/general/bin/kaldi")
+    
 _ali_command = ("gunzip -c {dir}/ali.gz |"
                 "ali-to-pdf {dir}/final.mdl ark:- ark,t:-")
 
