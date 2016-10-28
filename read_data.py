@@ -23,6 +23,9 @@ _ali_command = ("gunzip -c mono_ali/ali.gz |"#""gunzip -c mono_ali/ali.*.gz |"
 _feat_command = ("apply-cmvn --utt2spk=ark:{utt2spk} scp:{cmvn_scp} scp:{feat_scp} ark:- |"
                 "add-deltas ark:- ark,t:-").format(feat_scp=_feat_scp, cmvn_scp=_cmvn_scp, utt2spk=_utt2spk)
 
+_dev_feat_command = ("apply-cmvn --utt2spk=ark:{utt2spk} scp:{cmvn_scp} scp:{feat_scp} ark:- | add-deltas ark:- ark,t:-".format(
+    utt2spk="dev/utt2spk", cmvn_scp="dev/mfcc_cmvn.scp", feat_scp="dev/mfcc.scp")
+
 #END OF CONFIGURATION
 
 _cached_alignments = None
@@ -84,3 +87,6 @@ def read_all():
             yield key, val, _cached_alignments[key]
 
 
+def read_dev():
+    with Popen(_dev_feat_command, shell=True, stdout=PIPE) as features:
+        yield from _read_features(features.stdout)
