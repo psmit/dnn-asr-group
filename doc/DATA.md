@@ -35,15 +35,20 @@ Higher dimensional mfcc-features (which are similar in functionality to filterba
         compute-cmvn-stats --spk2utt=ark:${dataset}/spk2utt scp:${dataset}/hires.scp ark,scp:/work/courses/T/S/89/5150/general/data/tedlium/data/cmvn_${dataset}_hires.ark,${dataset}/hires_cmvn.scp
     done
 
+You don't have to run this commands yourself but they are useful when you need to describe what features you used. You can run `extract-segments` without parameters to find out what the options mean.
 
 Training
 ========
 
-Make a subset of the desired size. Appr 440 utterances / hour:
+Make a subset of the desired size. There are appr. 440 utterances / hour, so the following command creates a train subset of 1hour:
 
     utils/subset_data_dir.sh train_20h 440 train_1h
 
-#X-data
+If you need dataset bigger then 20 hours let me know and I'll run the feature extraction for you.
+
+X-data
+------
+
 This command generates a input matrix for each file
 
     apply-cmvn --utt2spk=ark:train_1h/utt2spk scp:train_1h/mfcc_cmvn.scp scp:train_1h/mfcc.scp ark:- | add-deltas ark:- ark,t:-
@@ -58,7 +63,8 @@ Also no deltas?
 
 Use the same feature command when doing recognition, just change the dataset (`train_1h` -> `dev`)
 
-#Y-data
+Y-data
+------
 
     ali-to-pdf mono_ali/final.mdl "ark:gunzip -c mono_ali/ali.*.gz|" ark,t:- | utils/filter_scp.pl train_20h/mfcc.scp
 
@@ -84,3 +90,12 @@ After that run
 
 and the best result can be found in `$recog_dir/best_wer`
 
+
+Smaller devset
+--------------
+
+The dev (and eval set) are actually quite big. It is totally valid to take a subset of it to get results faster. I suggest using:
+
+    utils/subset_data_dir.sh --per-spk dev 2 dev_2
+
+which creates a dev_2 directory with only 2 utterances / dev speaker. Now in all recognition commands you can use `dev_2` instead of `dev`
