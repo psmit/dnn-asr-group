@@ -21,11 +21,11 @@ You can use the same tensorflow installations for cpu and gpu. If no gpu is avai
 
 First, create a virtual environment:
 
-    virtualenv --system-site-packages -p python2.7 env_tensorflow
+    virtualenv --system-site-packages -p python3 env_tensorflow
     
 And after that you can install Tensorflow 0.10 with this command:
 
-    export TF_BINARY_URL=https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-0.10.0-cp27-none-linux_x86_64.whl
+    export TF_BINARY_URL=https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-0.10.0-cp35-cp35m-linux_x86_64.whl
     env_tensorflow/bin/pip install --upgrade $TF_BINARY_URL
     
 Note that you have to run still `. ./path.sh` to make sure that CuDNN is on your path.
