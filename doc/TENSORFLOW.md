@@ -1,12 +1,12 @@
 Using tensorflow on Aalto machines
 ==================================
 
-You can log in to an Aalto-Linux machine (e.g. in Maarintalo) or you can use the following machines for CPU computations through ssh
+You can log in to an Aalto-Linux machine (e.g. in Maarintalo) for GPU computing or you can use the following machines for CPU computations through ssh
 
     - brute.aalto.fi
     - force.aalto.fi
     
-You can also reach desktop machines in Maari, but you have to ssh to kosh.aalto.fi first and from there ssh to e.g.
+You can also reach desktop machines with GPU's in Maari, but you have to ssh to kosh.aalto.fi first and from there ssh to e.g.
 
     - zirkoni.aalto.fi
     - akaatti.aalto.fi
@@ -17,7 +17,9 @@ In the desktop machines, first check with the command `who` that no-one is using
 Tensorflow installation
 -----------------------
 
-Create first a virtual environment:
+You can use the same tensorflow installations for cpu and gpu. If no gpu is available the cpu will be used.
+
+First, create a virtual environment:
 
     virtualenv --system-site-packages -p python2.7 env_tensorflow
     
